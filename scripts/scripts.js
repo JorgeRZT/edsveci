@@ -33,6 +33,7 @@ if (isExperimentationEnabled) {
   ({
     loadEager: runExperimentation,
     loadLazy: showExperimentationOverlay,
+    // eslint-disable-next-line import/no-relative-packages
   } = await import('../plugins/experimentation/src/index.js'));
 }
 
