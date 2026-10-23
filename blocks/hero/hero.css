@@ -89,6 +89,30 @@ main > .section.hero-container {
   height: 180px;
 }
 
+.hero.banner p {
+  margin-top: 8px;
+  font-size: var(--body-font-size-m);
+}
+
+/* CTAs inside the hero (used by A/B challengers) */
+.hero p.button-container {
+  display: inline-block;
+  margin: 12px 6px 0;
+}
+
+.hero p.button-container a.button {
+  margin: 0;
+}
+
+.hero:not(.banner) a.button.secondary {
+  border-color: white;
+  color: white;
+}
+
+.hero:not(.banner) a.button.secondary:hover {
+  background-color: rgb(255 255 255 / 15%);
+}
+
 @media (width >= 900px) {
   .hero.banner .hero-content {
     padding: 28px 32px;

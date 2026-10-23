@@ -17,6 +17,50 @@ import {
   toCamelCase,
 } from './aem.js';
 
+const experimentationConfig = {
+  prodHost: 'main--edsveci--jorgerzt.aem.live',
+  audiences: {
+    mobile: () => window.innerWidth < 600,
+    desktop: () => window.innerWidth >= 600,
+  },
+};
+
+/**
+ * The pipeline renders section metadata as data-* attributes on the section,
+ * but the experimentation plugin reads .section-metadata blocks: rebuild them.
+ */
+function restoreSectionMetadata() {
+  const scopes = /^data-(experiment|campaign|audience)/;
+  document.querySelectorAll('main > div').forEach((section) => {
+    const attrs = section.getAttributeNames().filter((a) => scopes.test(a));
+    if (!attrs.length || section.querySelector(':scope > .section-metadata')) return;
+    const sm = document.createElement('div');
+    sm.className = 'section-metadata';
+    attrs.forEach((a) => {
+      const row = document.createElement('div');
+      const key = document.createElement('div');
+      const value = document.createElement('div');
+      key.textContent = a.substring(5);
+      value.textContent = section.getAttribute(a);
+      row.append(key, value);
+      sm.append(row);
+      section.removeAttribute(a);
+    });
+    section.append(sm);
+  });
+}
+
+let runExperimentation;
+restoreSectionMetadata();
+const isExperimentationEnabled = document.head.querySelector('[name^="experiment"],[name^="campaign-"],[name^="audience-"],[property^="campaign:"],[property^="audience:"]')
+  || [...document.querySelectorAll('.section-metadata div')].some((d) => d.textContent.match(/Experiment|Campaign|Audience/i));
+if (isExperimentationEnabled) {
+  ({
+    loadEager: runExperimentation,
+    // eslint-disable-next-line import/no-relative-packages
+  } = await import('../plugins/experimentation/src/index.js'));
+}
+
 /**
  * Builds hero block and prepends to main in a new section.
  * @param {Element} main The container element
@@ -140,6 +184,9 @@ export function decorateMain(main) {
  */
 async function loadEager(doc) {
   doc.documentElement.lang = 'es';
+  if (runExperimentation) {
+    await runExperimentation(doc, experimentationConfig);
+  }
   decorateTemplateAndTheme();
   if (getMetadata('breadcrumbs').toLowerCase() === 'true') {
     doc.body.dataset.breadcrumbs = true;
@@ -182,6 +229,11 @@ async function loadLazy(doc) {
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
+
+  const { hostname } = window.location;
+  if (window.hlx.experiments?.length && (hostname.endsWith('.page') || hostname === 'localhost')) {
+    import('./experiment-pill.js').then(({ default: showExperimentPill }) => showExperimentPill(window.hlx.experiments));
+  }
 }
 
 /**
