@@ -1,3 +1,4 @@
+/* stylelint-disable no-descending-specificity */
 .columns > div {
   display: flex;
   flex-direction: column;
@@ -29,5 +30,76 @@
   .columns > div > div {
     flex: 1;
     order: unset;
+  }
+}
+
+/* inspiration: long text + image */
+.columns.inspiration > div {
+  gap: 24px;
+}
+
+.columns.inspiration h2 {
+  margin-top: 0;
+}
+
+.columns.inspiration p {
+  font-size: var(--body-font-size-s);
+}
+
+.columns.inspiration .columns-img-col img {
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+@media (width >= 900px) {
+  .columns.inspiration > div {
+    align-items: flex-start;
+    gap: 48px;
+  }
+
+  .columns.inspiration > div > div:not(.columns-img-col) {
+    flex: 1.4;
+  }
+}
+
+/* footer-links: dark footer columns */
+.columns.footer-links > div {
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.columns.footer-links h3 {
+  margin: 0 0 12px;
+  color: white;
+  font-size: var(--body-font-size-m);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.columns.footer-links ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.columns.footer-links li {
+  margin: 6px 0;
+  font-size: var(--body-font-size-s);
+}
+
+.columns.footer-links a:any-link {
+  color: white;
+}
+
+.columns.footer-links img {
+  width: auto;
+}
+
+@media (width >= 900px) {
+  .columns.footer-links > div {
+    align-items: flex-start;
+    gap: 40px;
   }
 }

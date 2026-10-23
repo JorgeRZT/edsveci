@@ -1,0 +1,97 @@
+.price-calendar {
+  text-align: center;
+}
+
+.price-calendar .price-calendar-scroller {
+  position: relative;
+  overflow-x: auto;
+  border: 1px solid var(--border-color);
+}
+
+.price-calendar table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--body-font-size-s);
+}
+
+.price-calendar th,
+.price-calendar td {
+  min-width: 72px;
+  padding: 8px 6px;
+  border-bottom: 1px solid var(--border-color);
+  text-align: center;
+  vertical-align: middle;
+}
+
+.price-calendar thead th {
+  background-color: var(--light-color);
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.price-calendar .price-calendar-year {
+  display: block;
+  color: var(--muted-text-color);
+  font-size: var(--body-font-size-xs);
+}
+
+.price-calendar .price-calendar-month {
+  font-weight: 600;
+}
+
+.price-calendar tbody th,
+.price-calendar thead th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  min-width: 130px;
+  background-color: white;
+  font-weight: 500;
+  text-align: left;
+  box-shadow: 1px 0 0 var(--border-color);
+}
+
+.price-calendar thead th:first-child {
+  background-color: var(--light-color);
+}
+
+.price-calendar td a:any-link {
+  display: flex;
+  flex-direction: column;
+  color: var(--price-color);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.price-calendar .price-calendar-from {
+  color: var(--muted-text-color);
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.price-calendar td.price-calendar-best {
+  background-color: var(--highlight-cell-color);
+}
+
+.price-calendar td.price-calendar-empty::before {
+  content: '×';
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: var(--grey-color);
+  color: #6b6b6b;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.price-calendar:not(.expanded) .price-calendar-extra {
+  display: none;
+}
+
+.price-calendar button.price-calendar-more {
+  margin-top: 24px;
+  min-width: 200px;
+}
