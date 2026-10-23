@@ -17,6 +17,25 @@ import {
   toCamelCase,
 } from './aem.js';
 
+const experimentationConfig = {
+  prodHost: 'main--edsveci--jorgerzt.aem.live',
+  audiences: {
+    mobile: () => window.innerWidth < 600,
+    desktop: () => window.innerWidth >= 600,
+  },
+};
+
+let runExperimentation;
+let showExperimentationOverlay;
+const isExperimentationEnabled = document.head.querySelector('[name^="experiment"],[name^="campaign-"],[name^="audience-"],[property^="campaign:"],[property^="audience:"]')
+  || [...document.querySelectorAll('.section-metadata div')].some((d) => d.textContent.match(/Experiment|Campaign|Audience/i));
+if (isExperimentationEnabled) {
+  ({
+    loadEager: runExperimentation,
+    loadLazy: showExperimentationOverlay,
+  } = await import('../plugins/experimentation/src/index.js'));
+}
+
 /**
  * Builds hero block and prepends to main in a new section.
  * @param {Element} main The container element
@@ -140,6 +159,9 @@ export function decorateMain(main) {
  */
 async function loadEager(doc) {
   doc.documentElement.lang = 'es';
+  if (runExperimentation) {
+    await runExperimentation(doc, experimentationConfig);
+  }
   decorateTemplateAndTheme();
   if (getMetadata('breadcrumbs').toLowerCase() === 'true') {
     doc.body.dataset.breadcrumbs = true;
@@ -182,6 +204,10 @@ async function loadLazy(doc) {
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
+
+  if (showExperimentationOverlay) {
+    await showExperimentationOverlay(doc, experimentationConfig);
+  }
 }
 
 /**
