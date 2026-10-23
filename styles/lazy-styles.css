@@ -1,1 +1,42 @@
 /* add global styles that can be loaded post LCP here */
+
+/* A/B variant switcher (preview only) */
+.experiment-pill {
+  position: fixed;
+  left: 16px;
+  bottom: 96px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.experiment-pill details {
+  border-radius: 20px;
+  background-color: var(--dark-color, #121412);
+  color: white;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 30%);
+}
+
+.experiment-pill summary {
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.experiment-pill ul {
+  margin: 0;
+  padding: 0 16px 12px;
+  list-style: none;
+}
+
+.experiment-pill a:any-link {
+  display: block;
+  padding: 4px 0;
+  color: white;
+}
+
+.experiment-pill a[aria-current] {
+  color: var(--cta-color, #70db96);
+  font-weight: 600;
+}

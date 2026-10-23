@@ -51,14 +51,12 @@ function restoreSectionMetadata() {
 }
 
 let runExperimentation;
-let showExperimentationOverlay;
 restoreSectionMetadata();
 const isExperimentationEnabled = document.head.querySelector('[name^="experiment"],[name^="campaign-"],[name^="audience-"],[property^="campaign:"],[property^="audience:"]')
   || [...document.querySelectorAll('.section-metadata div')].some((d) => d.textContent.match(/Experiment|Campaign|Audience/i));
 if (isExperimentationEnabled) {
   ({
     loadEager: runExperimentation,
-    loadLazy: showExperimentationOverlay,
     // eslint-disable-next-line import/no-relative-packages
   } = await import('../plugins/experimentation/src/index.js'));
 }
@@ -232,8 +230,9 @@ async function loadLazy(doc) {
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
 
-  if (showExperimentationOverlay) {
-    await showExperimentationOverlay(doc, experimentationConfig);
+  const { hostname } = window.location;
+  if (window.hlx.experiments?.length && (hostname.endsWith('.page') || hostname === 'localhost')) {
+    import('./experiment-pill.js').then(({ default: showExperimentPill }) => showExperimentPill(window.hlx.experiments));
   }
 }
 
