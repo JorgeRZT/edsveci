@@ -25,8 +25,34 @@ const experimentationConfig = {
   },
 };
 
+/**
+ * The pipeline renders section metadata as data-* attributes on the section,
+ * but the experimentation plugin reads .section-metadata blocks: rebuild them.
+ */
+function restoreSectionMetadata() {
+  const scopes = /^data-(experiment|campaign|audience)/;
+  document.querySelectorAll('main > div').forEach((section) => {
+    const attrs = section.getAttributeNames().filter((a) => scopes.test(a));
+    if (!attrs.length || section.querySelector(':scope > .section-metadata')) return;
+    const sm = document.createElement('div');
+    sm.className = 'section-metadata';
+    attrs.forEach((a) => {
+      const row = document.createElement('div');
+      const key = document.createElement('div');
+      const value = document.createElement('div');
+      key.textContent = a.substring(5);
+      value.textContent = section.getAttribute(a);
+      row.append(key, value);
+      sm.append(row);
+      section.removeAttribute(a);
+    });
+    section.append(sm);
+  });
+}
+
 let runExperimentation;
 let showExperimentationOverlay;
+restoreSectionMetadata();
 const isExperimentationEnabled = document.head.querySelector('[name^="experiment"],[name^="campaign-"],[name^="audience-"],[property^="campaign:"],[property^="audience:"]')
   || [...document.querySelectorAll('.section-metadata div')].some((d) => d.textContent.match(/Experiment|Campaign|Audience/i));
 if (isExperimentationEnabled) {
